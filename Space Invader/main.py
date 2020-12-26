@@ -1,12 +1,25 @@
 import pygame
 import random
 import math
+from pygame import mixer
 # Initialising pygame
 pygame.init()
 
 # Creating a screen
 screen = pygame.display.set_mode((800, 600))
-score = 0
+
+#Score
+score_value = 0
+font = pygame.font.Font('freesansbold.ttf', 32)
+game_over_font = pygame.font.Font('freesansbold.ttf', 64)
+
+textX = 10
+textY = 10
+
+def show_score(x, y):
+    score = font.render(f"Score: {score_value}", True, (255, 255, 255))
+    screen.blit(score, (x, y))
+
 #Background
 background = pygame.image.load("background.png")
 #Title and icon
@@ -98,6 +111,13 @@ while running:
     
     # Enemy Movement
     for i in range(num_of_enemies):
+        #Game Over
+        if enemyY[i]>440:
+            final_score = game_over_font.render("GAME OVER", True, (255, 255, 255))
+            screen.blit(background, (0,0))
+            screen.blit(final_score, (200, 250))
+            show_score(textX, textY)
+            break
         enemyX[i]+=enemyX_change[i]
 
         # Setting boundries for enemy
@@ -113,10 +133,9 @@ while running:
         if collision:
             bulletY = 480
             bulletState = 'ready'
-            score+=1
+            score_value+=1
             enemyX[i] = random.randint(0, 735)
             enemyY[i] = random.randint(50, 150)
-            print(score)
 
         enemy(enemyX[i], enemyY[i], i)
 
@@ -133,6 +152,7 @@ while running:
         bulletY -= bulletY_change
     
   
+    show_score(textX, textY)
 
     # Update the game window always
     pygame.display.update()
